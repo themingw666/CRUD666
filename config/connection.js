@@ -1,17 +1,22 @@
 require('dotenv').config();
 const { Pool } = require('pg');
 
-const pool = new Pool({
+const poolConfig = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
   database: process.env.DB_NAME,
-  ssl: {
-      rejectUnauthorized: false
-  },
   connectionTimeoutMillis: 10000 // Timeout 10 seconds
-});
+};
+
+if (process.env.DB_SSL === 'true') {
+  poolConfig.ssl = {
+    rejectUnauthorized: false
+  };
+}
+
+const pool = new Pool(poolConfig);
 
 pool.on('error', (err, client) => {
   console.error('Database connection error on idle client:', err.message);

@@ -92,6 +92,26 @@ class Controller {
             }
         });
     }
+
+    static generateRandom(req, res) {
+        Item.generateRandom((err) => {
+            if(err){
+                res.send(err);
+            } else {
+                res.redirect("/items");
+            }
+        });
+    }
+
+    static deleteAll(req, res) {
+        Item.deleteAll((err) => {
+            if(err){
+                res.send(err);
+            } else {
+                res.redirect("/items");
+            }
+        });
+    }
 }
 
 module.exports = Controller;
