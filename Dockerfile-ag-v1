@@ -1,8 +1,11 @@
 # Use Node.js LTS
-FROM harbor.devopops.com/images/node:20-slim
+FROM node:20-slim
 
 # Setup working directory
 WORKDIR /app
+
+# Install dumb-init strictly to handle PID 1 signals (like Ctrl+C SIGINT)
+RUN apt-get update && apt-get install -y dumb-init --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # Copy package files strictly for layer caching
 COPY package*.json ./
@@ -22,6 +25,9 @@ COPY . .
 
 # Expose server port
 EXPOSE 3000
+
+# Use dumb-init to orchestrate processes
+ENTRYPOINT ["dumb-init", "--"]
 
 # Run the app
 CMD ["node", "app.js"]
